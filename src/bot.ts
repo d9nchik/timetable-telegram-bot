@@ -42,6 +42,36 @@ bot.command('nextweek', ctx => {
   ctx.replyWithMarkdown(getMarkDownStringForWeek(weekNumber));
 });
 
+bot.command('left', ctx => {
+  const startOfPair = [830, 1025, 1220, 1415, 1610, 1830];
+  const endOfPair = [1000, 1200, 1355, 1550, 1745, 2005];
+  const date = convertTZ(new Date());
+  const seconds = date.getSeconds();
+  const minutes = date.getMinutes();
+  const hours = date.getHours();
+  const hoursAndMinutesCombined = hours * 100 + minutes;
+
+  for (let i = 0; i < startOfPair.length; i++) {
+    if (
+      startOfPair[i] < hoursAndMinutesCombined &&
+      hoursAndMinutesCombined < endOfPair[i]
+    ) {
+      const timeLeft = endOfPair[i] - hoursAndMinutesCombined;
+      const minutesLeft = Math.floor(timeLeft / 100) * 60 + (timeLeft % 100);
+      ctx.replyWithMarkdown(
+        seconds === 0
+          ? `До конца пары осталось: *${minutesLeft} мин*`
+          : `До конца пары осталось: *${minutesLeft - 1} мин ${
+              60 - seconds
+            } сек*`
+      );
+      return;
+    }
+  }
+
+  ctx.reply('Сейчас точно пара?');
+});
+
 function getMarkDownStringForWeek(weekNumber: number): string {
   let totalString = '';
   for (let day = 0; day < 6; day++) {
@@ -83,4 +113,11 @@ function getWeekNumber(d: Date): number {
   return Math.ceil(((Number(d) - Number(yearStart)) / 86400000 + 1) / 7);
 }
 
+function convertTZ(date: string | Date, tzString = 'Europe/Kiev'): Date {
+  return new Date(
+    (typeof date === 'string' ? new Date(date) : date).toLocaleString('en-US', {
+      timeZone: tzString,
+    })
+  );
+}
 export default bot;

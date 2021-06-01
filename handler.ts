@@ -5,7 +5,7 @@ export async function webhook(
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> {
   if (event.body) {
-    let body =
+    const body =
       event.body[0] === '{'
         ? JSON.parse(event.body)
         : JSON.parse(String(Buffer.from(event.body, 'base64')));

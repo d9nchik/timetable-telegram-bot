@@ -3,3 +3,5 @@
 .vscode
 .build
 /.serverless
+/.husky/_
+/.husky/.gitignore

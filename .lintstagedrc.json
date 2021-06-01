@@ -1,0 +1,4 @@
+{
+  "src/**/*.{t,j}s{x,}": "eslint",
+  "**/*": "prettier --write --ignore-unknown"
+}

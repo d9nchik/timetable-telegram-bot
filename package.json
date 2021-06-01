@@ -7,7 +7,7 @@
     "local": "sls offline start",
     "deploy": "sls deploy",
     "test": "jest",
-    "lint": "eslint \"src/**/*.{t,j}s{x,}\"",
+    "lint": "eslint \"**/*.{t,j}s{x,}\"",
     "lint:write": "eslint --debug src/ --fix",
     "format": "prettier --write .",
     "format:stage": "pretty-quick --staged",

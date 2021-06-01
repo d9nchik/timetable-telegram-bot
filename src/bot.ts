@@ -34,6 +34,24 @@ bot.command('/today', ctx => {
   ctx.reply(totalString);
 });
 
+bot.command('/tomorrow', ctx => {
+  const date = new Date();
+  const weekNumber = getWeekNumber(date) % 2;
+  const currentWeek = weekTimeTable[weekNumber];
+  const day = (date.getDay() + 1) % 7;
+  if (day === 0 || day >= currentWeek[0].length) {
+    ctx.reply('Немає пар');
+    return;
+  }
+  let totalString = currentWeek[0][day][0];
+  for (let i = 1; i < currentWeek.length; i++) {
+    const element = currentWeek[i][day];
+    if (element.length === 0) continue;
+    totalString = `${totalString}\n${i}) ${element.join(' ')}`;
+  }
+  ctx.reply(totalString);
+});
+
 function getWeekNumber(d: Date) {
   // Copy date so don't modify original
   d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));

@@ -1,5 +1,6 @@
 import { Telegraf } from 'telegraf';
 import weekTimeTable from './data.json';
+import exam from './exam.json';
 
 const BOT_TOKEN = process.env.BOT_TOKEN || 'something gone wrong';
 console.log(BOT_TOKEN);
@@ -42,13 +43,24 @@ bot.command('nextweek', ctx => {
   ctx.replyWithMarkdown(getMarkDownStringForWeek(weekNumber));
 });
 
-bot.command('full', ctx => {
+bot.command('full', ctx =>
   ctx.replyWithMarkdown(
     `*Перший тиждень*\n${getMarkDownStringForWeek(
       0
     )}\n\n*Другий тиждень*\n${getMarkDownStringForWeek(1)}`
-  );
-});
+  )
+);
+
+bot.command('exam', ctx =>
+  ctx.replyWithMarkdown(
+    exam
+      .map(
+        ({ subject, time, date, who }) =>
+          `*${date}* ${time}\n_${who}_\n${subject}`
+      )
+      .join('\n\n')
+  )
+);
 
 bot.command('left', ctx => {
   const startOfPair = [830, 1025, 1220, 1415, 1610, 1830];

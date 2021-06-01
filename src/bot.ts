@@ -16,19 +16,41 @@ bot.command('timetable', ctx =>
 6 пара  18-30 - 20-05_`)
 );
 
-bot.command('/today', ctx => {
+bot.command('today', ctx => {
   const date = new Date();
   const weekNumber = getWeekNumber(date) % 2;
   const day = date.getDay();
   ctx.replyWithMarkdown(getMarkDownStringForDay(day, weekNumber));
 });
 
-bot.command('/tomorrow', ctx => {
+bot.command('tomorrow', ctx => {
   const date = new Date();
   const weekNumber = getWeekNumber(date) % 2;
   const day = (date.getDay() + 1) % 7;
   ctx.replyWithMarkdown(getMarkDownStringForDay(day, weekNumber));
 });
+
+bot.command('week', ctx => {
+  const date = new Date();
+  const weekNumber = getWeekNumber(date) % 2;
+  ctx.replyWithMarkdown(getMarkDownStringForWeek(weekNumber));
+});
+
+bot.command('nextweek', ctx => {
+  const date = new Date();
+  const weekNumber = (getWeekNumber(date) + 1) % 2;
+  ctx.replyWithMarkdown(getMarkDownStringForWeek(weekNumber));
+});
+
+function getMarkDownStringForWeek(weekNumber: number): string {
+  let totalString = '';
+  for (let day = 0; day < 6; day++) {
+    const stringForDay = getMarkDownStringForDay(day, weekNumber);
+    if (stringForDay === 'Немає пар') continue;
+    totalString = `${totalString}\n\n${stringForDay}`;
+  }
+  return totalString;
+}
 
 function getMarkDownStringForDay(day: number, weekNumber: number): string {
   const currentWeek = weekTimeTable[weekNumber];

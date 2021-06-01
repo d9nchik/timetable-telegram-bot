@@ -8,51 +8,47 @@ const bot = new Telegraf(BOT_TOKEN);
 bot.hears('hi', ctx => ctx.reply('Hello from bot'));
 
 bot.command('timetable', ctx =>
-  ctx.reply(`1 пара  08-30 - 10-05
+  ctx.replyWithMarkdown(`_1 пара  08-30 - 10-05
 2 пара  10-25 - 12-00
 3 пара  12-20 - 13-55
 4 пара  14-15 - 15-50
 5 пара  16-10 - 17-45
-6 пара  18-30 - 20-05`)
+6 пара  18-30 - 20-05_`)
 );
 
 bot.command('/today', ctx => {
   const date = new Date();
   const weekNumber = getWeekNumber(date) % 2;
-  const currentWeek = weekTimeTable[weekNumber];
   const day = date.getDay();
-  if (day === 0 || day >= currentWeek[0].length) {
-    ctx.reply('Немає пар');
-    return;
-  }
-  let totalString = currentWeek[0][day][0];
-  for (let i = 1; i < currentWeek.length; i++) {
-    const element = currentWeek[i][day];
-    if (element.length === 0) continue;
-    totalString = `${totalString}\n${i}) ${element.join(' ')}`;
-  }
-  ctx.reply(totalString);
+  ctx.replyWithMarkdown(getMarkDownStringForDay(day, weekNumber));
 });
 
 bot.command('/tomorrow', ctx => {
   const date = new Date();
   const weekNumber = getWeekNumber(date) % 2;
-  const currentWeek = weekTimeTable[weekNumber];
   const day = (date.getDay() + 1) % 7;
-  if (day === 0 || day >= currentWeek[0].length) {
-    ctx.reply('Немає пар');
-    return;
+  ctx.replyWithMarkdown(getMarkDownStringForDay(day, weekNumber));
+});
+
+function getMarkDownStringForDay(day: number, weekNumber: number): string {
+  const currentWeek = weekTimeTable[weekNumber];
+  if (
+    day === 0 ||
+    day >= currentWeek[0].length ||
+    currentWeek.every(item => item[day].length > 0)
+  ) {
+    return 'Немає пар';
   }
-  let totalString = currentWeek[0][day][0];
+  let totalString = `*${currentWeek[0][day][0]}*`;
   for (let i = 1; i < currentWeek.length; i++) {
     const element = currentWeek[i][day];
     if (element.length === 0) continue;
     totalString = `${totalString}\n${i}) ${element.join(' ')}`;
   }
-  ctx.reply(totalString);
-});
+  return totalString;
+}
 
-function getWeekNumber(d: Date) {
+function getWeekNumber(d: Date): number {
   // Copy date so don't modify original
   d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
   // Set to nearest Thursday: current date + 4 - current day number

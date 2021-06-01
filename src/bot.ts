@@ -42,6 +42,14 @@ bot.command('nextweek', ctx => {
   ctx.replyWithMarkdown(getMarkDownStringForWeek(weekNumber));
 });
 
+bot.command('full', ctx => {
+  ctx.replyWithMarkdown(
+    `*Перший тиждень*\n${getMarkDownStringForWeek(
+      0
+    )}\n\n*Другий тиждень*\n${getMarkDownStringForWeek(1)}`
+  );
+});
+
 bot.command('left', ctx => {
   const startOfPair = [830, 1025, 1220, 1415, 1610, 1830];
   const endOfPair = [1000, 1200, 1355, 1550, 1745, 2005];

@@ -115,7 +115,9 @@ function getMarkDownStringForDay(day: number, weekNumber: number): string {
   for (let i = 1; i < currentWeek.length; i++) {
     const element = currentWeek[i][day];
     if (element.length === 0) continue;
-    totalString = `${totalString}\n${i}) ${element.join(' ')}`;
+    totalString = `${totalString}\n${i}) ${element[0]} ${
+      element.length > 1 ? '`' + element[element.length - 1] + '`' : ''
+    }`;
   }
   return totalString;
 }

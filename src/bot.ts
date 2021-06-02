@@ -2,6 +2,9 @@ import { Telegraf } from 'telegraf';
 import weekTimeTable from './data.json';
 import exam from './exam.json';
 
+const startOfPair = [830, 1025, 1220, 1415, 1610, 1830];
+const endOfPair = [1000, 1200, 1355, 1550, 1745, 2005];
+
 const BOT_TOKEN = process.env.BOT_TOKEN || 'something gone wrong';
 console.log(BOT_TOKEN);
 
@@ -62,11 +65,45 @@ bot.command('exam', ctx =>
   )
 );
 
+bot.command('who', ctx => {
+  const date = new Date();
+  const pairNumber = getCurrentNumberOfPair();
+  const weekNumber = getWeekNumber(date) % 2;
+  const day = date.getDay();
+
+  const currentWeek = weekTimeTable[weekNumber];
+  if (pairNumber < currentWeek.length) {
+    const pairArray = currentWeek[pairNumber + 1][day];
+    if (pairArray.length > 1) {
+      ctx.reply(pairArray.slice(1, pairArray.length - 1).join(' '));
+      return;
+    }
+  }
+  ctx.reply('Сейчас точно пара?');
+});
+
 bot.command('left', ctx => {
-  const startOfPair = [830, 1025, 1220, 1415, 1610, 1830];
-  const endOfPair = [1000, 1200, 1355, 1550, 1745, 2005];
+  const pairNumber = getCurrentNumberOfPair();
+  if (pairNumber !== -1) {
+    const date = convertTZ(new Date());
+    const seconds = date.getSeconds();
+    const minutes = date.getMinutes();
+    const hours = date.getHours();
+
+    const hoursAndMinutesCombined = hours * 100 + minutes;
+
+    const timeLeft = endOfPair[pairNumber] - hoursAndMinutesCombined;
+    const minutesLeft = Math.floor(timeLeft / 100) * 60 + (timeLeft % 100);
+    ctx.replyWithMarkdown(
+      seconds === 0
+        ? `До конца пары осталось: *${minutesLeft} мин*`
+        : `До конца пары осталось: *${minutesLeft - 1} мин ${60 - seconds} сек*`
+    );
+  } else ctx.reply('Сейчас точно пара?');
+});
+
+function getCurrentNumberOfPair(): number {
   const date = convertTZ(new Date());
-  const seconds = date.getSeconds();
   const minutes = date.getMinutes();
   const hours = date.getHours();
   const hoursAndMinutesCombined = hours * 100 + minutes;
@@ -75,26 +112,15 @@ bot.command('left', ctx => {
     if (
       startOfPair[i] < hoursAndMinutesCombined &&
       hoursAndMinutesCombined < endOfPair[i]
-    ) {
-      const timeLeft = endOfPair[i] - hoursAndMinutesCombined;
-      const minutesLeft = Math.floor(timeLeft / 100) * 60 + (timeLeft % 100);
-      ctx.replyWithMarkdown(
-        seconds === 0
-          ? `До конца пары осталось: *${minutesLeft} мин*`
-          : `До конца пары осталось: *${minutesLeft - 1} мин ${
-              60 - seconds
-            } сек*`
-      );
-      return;
-    }
+    )
+      return i;
   }
-
-  ctx.reply('Сейчас точно пара?');
-});
+  return -1;
+}
 
 function getMarkDownStringForWeek(weekNumber: number): string {
   let totalString = '';
-  for (let day = 0; day < 6; day++) {
+  for (let day = 1; day < 7; day++) {
     const stringForDay = getMarkDownStringForDay(day, weekNumber);
     if (stringForDay === 'Немає пар') continue;
     totalString = `${totalString}\n\n${stringForDay}`;

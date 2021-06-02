@@ -48,9 +48,9 @@ bot.command('nextweek', ctx => {
 
 bot.command('full', ctx =>
   ctx.replyWithMarkdown(
-    `*Перший тиждень*\n${getMarkDownStringForWeek(
+    `*Перший тиждень*\n${getFullMarkdownStringForWeek(
       0
-    )}\n\n*Другий тиждень*\n${getMarkDownStringForWeek(1)}`
+    )}\n\n*Другий тиждень*\n${getFullMarkdownStringForWeek(1)}`
   )
 );
 
@@ -118,12 +118,42 @@ function getCurrentNumberOfPair(): number {
   return -1;
 }
 
+function getFullMarkdownStringForWeek(weekNumber: number): string {
+  let totalString = '';
+  for (let day = 1; day < 7; day++) {
+    const stringForDay = getFullMarkdownStringForDay(day, weekNumber);
+    if (!stringForDay) continue;
+    totalString = `${totalString}\n\n${stringForDay}`;
+  }
+  return totalString;
+}
+
 function getMarkDownStringForWeek(weekNumber: number): string {
   let totalString = '';
   for (let day = 1; day < 7; day++) {
     const stringForDay = getMarkDownStringForDay(day, weekNumber);
     if (stringForDay === 'Немає пар') continue;
     totalString = `${totalString}\n\n${stringForDay}`;
+  }
+  return totalString;
+}
+
+function getFullMarkdownStringForDay(day: number, weekNumber: number) {
+  const currentWeek = weekTimeTable[weekNumber];
+  if (
+    day === 0 ||
+    day >= currentWeek[0].length ||
+    currentWeek.every(item => item[day].length > 0)
+  ) {
+    return '';
+  }
+  let totalString = `*${currentWeek[0][day][0]}*`;
+  for (let i = 1; i < currentWeek.length; i++) {
+    const pairArray = currentWeek[i][day];
+    if (pairArray.length === 0) continue;
+    totalString = `${totalString}\n${i}) ${pairArray[0]} ${
+      pairArray.length > 1 ? '`' + pairArray[pairArray.length - 1] + '`' : ''
+    }\n_${pairArray.slice(1, pairArray.length - 1).join(' ')}_`;
   }
   return totalString;
 }

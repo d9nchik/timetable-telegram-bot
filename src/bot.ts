@@ -2,8 +2,8 @@ import { Telegraf } from 'telegraf';
 import weekTimeTable from './data.json';
 import exam from './exam.json';
 
-const startOfPair = [830, 1025, 1220, 1415, 1610, 1830];
-const endOfPair = [1000, 1200, 1355, 1550, 1745, 2005];
+const startOfPair = [830, 1025, 1220, 1415, 1610, 1830, 2020];
+const endOfPair = [1000, 1200, 1355, 1550, 1745, 2005, 2155];
 
 const BOT_TOKEN = process.env.BOT_TOKEN || 'something gone wrong';
 console.log(BOT_TOKEN);
@@ -17,7 +17,8 @@ bot.command('timetable', ctx =>
 3 пара  12-20 - 13-55
 4 пара  14-15 - 15-50
 5 пара  16-10 - 17-45
-6 пара  18-30 - 20-05_`)
+6 пара  18-30 - 20-05
+7 пара  20-20 - 21-55_`)
 );
 
 bot.command('today', ctx => {

@@ -163,7 +163,7 @@ function getMarkDownStringForDay(day: number, weekNumber: number): string {
   if (
     day === 0 ||
     day >= currentWeek[0].length ||
-    currentWeek.every(item => item[day].length > 0)
+    currentWeek.filter(item => item[day].length > 0).length <= 1
   ) {
     return 'Немає пар';
   }

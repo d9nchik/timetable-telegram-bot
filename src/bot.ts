@@ -75,7 +75,7 @@ bot.command('who', ctx => {
   const currentWeek = weekTimeTable[weekNumber];
   if (pairNumber < currentWeek.length) {
     const pairArray = currentWeek[pairNumber + 1][day];
-    if (pairArray.length > 1) {
+    if (pairArray.length > 2) {
       ctx.reply(pairArray.slice(1, pairArray.length - 1).join(' '));
       return;
     }

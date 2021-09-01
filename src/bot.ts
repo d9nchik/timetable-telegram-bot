@@ -23,27 +23,27 @@ bot.command('timetable', ctx =>
 
 bot.command('today', ctx => {
   const date = new Date();
-  const weekNumber = getWeekNumber(date) % 2;
+  const weekNumber = getBinaryWeekNumber(date) % 2;
   const day = date.getDay();
   ctx.replyWithMarkdown(getMarkDownStringForDay(day, weekNumber));
 });
 
 bot.command('tomorrow', ctx => {
   const date = new Date();
-  const weekNumber = getWeekNumber(date) % 2;
+  const weekNumber = getBinaryWeekNumber(date) % 2;
   const day = (date.getDay() + 1) % 7;
   ctx.replyWithMarkdown(getMarkDownStringForDay(day, weekNumber));
 });
 
 bot.command('week', ctx => {
   const date = new Date();
-  const weekNumber = getWeekNumber(date) % 2;
+  const weekNumber = getBinaryWeekNumber(date) % 2;
   ctx.replyWithMarkdown(getMarkDownStringForWeek(weekNumber));
 });
 
 bot.command('nextweek', ctx => {
   const date = new Date();
-  const weekNumber = (getWeekNumber(date) + 1) % 2;
+  const weekNumber = (getBinaryWeekNumber(date) + 1) % 2;
   ctx.replyWithMarkdown(getMarkDownStringForWeek(weekNumber));
 });
 
@@ -69,7 +69,7 @@ bot.command('exam', ctx =>
 bot.command('who', ctx => {
   const date = new Date();
   const pairNumber = getCurrentNumberOfPair();
-  const weekNumber = getWeekNumber(date) % 2;
+  const weekNumber = getBinaryWeekNumber(date) % 2;
   const day = date.getDay();
 
   const currentWeek = weekTimeTable[weekNumber];
@@ -177,6 +177,10 @@ function getMarkDownStringForDay(day: number, weekNumber: number): string {
     }`;
   }
   return totalString;
+}
+
+function getBinaryWeekNumber(d: Date): number {
+  return (getWeekNumber(d) + 1) % 2;
 }
 
 function getWeekNumber(d: Date): number {

@@ -180,7 +180,7 @@ function getMarkDownStringForDay(day: number, weekNumber: number): string {
 }
 
 function getBinaryWeekNumber(d: Date): number {
-  return (getWeekNumber(d) + 1) % 2;
+  return getWeekNumber(d) % 2;
 }
 
 function getWeekNumber(d: Date): number {
